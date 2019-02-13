@@ -8,8 +8,11 @@
  */
 
 import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
-const User = mongoose.Schema({
+const saltRounds = 10;
+
+const User = new mongoose.Schema({
   email: {
     type: String,
     index: true,
@@ -17,5 +20,19 @@ const User = mongoose.Schema({
   hash: String,
   claims: [{ type: mongoose.Schema.Types.ObjectId, ref: 'UserClaim' }],
 });
+
+User.methods.setPassword = password => {
+  bcrypt.hash(password, saltRounds).then(hash => {
+    this.hash = hash;
+  });
+};
+
+User.methods.validatePassword = password => {
+  let valid = false;
+  bcrypt.compare(password, this.hash).then(match => {
+    valid = match;
+  });
+  return valid;
+};
 
 export default mongoose.model('User', User);

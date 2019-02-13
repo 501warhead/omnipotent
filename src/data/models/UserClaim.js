@@ -9,7 +9,7 @@
 
 import mongoose from 'mongoose';
 
-const UserClaim = mongoose.Schema({
+const UserClaim = new mongoose.Schema({
   type: {
     type: String,
     index: true,
