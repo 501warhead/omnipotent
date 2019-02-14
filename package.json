@@ -2,12 +2,12 @@
   "name": "omnipotent",
   "version": "1.0.0",
   "description": "The web front end to Omniscience, a minecraft logging plugin",
-  "main": "src/server/index.js",
+  "main": "src/server/bin/www",
   "scripts": {
     "build": "webpack --mode production",
-    "start": "npm run build && node src/server/index.js",
+    "start": "npm run build && node src/server/bin/www",
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
-    "server": "nodemon src/server/index.js",
+    "server": "nodemon src/server/bin/www",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "author": "501warhead",
@@ -20,6 +20,9 @@
     "express-jwt": "^5.3.1",
     "mongoose": "^5.4.11",
     "morgan": "^1.9.1",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
     "react": "^16.5.2",
     "react-dom": "^16.5.2",
     "winston": "^3.2.1"

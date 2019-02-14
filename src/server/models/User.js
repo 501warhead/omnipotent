@@ -24,7 +24,8 @@ const User = new mongoose.Schema({
   },
   lockUntil: {
     type: Number
-  }
+  },
+  claims: [{ type: String }]
 });
 
 const reasons = {
@@ -90,7 +91,7 @@ User.statics.getAuthenticated = (username, password, callback) => {
       });
     }
 
-    return User.comparePassowrd(password, (cErr, isMatch) => {
+    return User.comparePassword(password, (cErr, isMatch) => {
       if (cErr) return callback(cErr);
 
       if (isMatch) {

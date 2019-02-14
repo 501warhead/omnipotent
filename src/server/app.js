@@ -1,7 +1,13 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import morgan from 'morgan';
 
 const app = express();
+
+mongoose.connect(process.env.NODE_ENV === 'Production' ? process.env.DATABASE_URI : 'mongodb://localhost:27017/omnipotent', (err) => {
+  if (err) throw err;
+  console.log('successfully connected to database');
+});
 
 app.use(morgan('dev'));
 app.use(express.json());
