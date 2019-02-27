@@ -17,9 +17,7 @@ router.use('/login', (req, res) => {
       if (loginErr) {
         return res.send(loginErr);
       }
-
-      const token = null;
-      return res.json({ user: token });
+      return res.json({ user: user.toAuthJSON() });
     });
   })(req, res);
 });

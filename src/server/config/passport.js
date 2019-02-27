@@ -2,11 +2,12 @@ import passport from 'passport';
 import mongoose from 'mongoose';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as LocalStrategy } from 'passport-local';
+import { secret } from '.';
 
 const User = mongoose.model('User');
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = 'secret';
+opts.secretOrKey = secret;
 
 passport.use(new LocalStrategy({
   usernameField: 'email',
@@ -25,7 +26,7 @@ passport.use(new LocalStrategy({
 })));
 
 passport.use(new JwtStrategy(opts, (jwtPayload, done) => {
-  User.findOne({ id: jwtPayload.sub }, (err, user) => {
+  User.findOne({ id: jwtPayload.id }, (err, user) => {
     if (err) {
       return done(err, false);
     }

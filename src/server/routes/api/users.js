@@ -2,19 +2,33 @@ import mongoose from 'mongoose';
 import express from 'express';
 import passport from 'passport';
 
-const router = new express.Router();
+const router = express.Router();
 const User = mongoose.model('User');
 
-router.post('/login', (req, res, next) => {
-  if (!req.body.user.email) {
-    return res.status(422).json({ errors: { email: "can't be blank" } });
+router.param('id', (req, res, next, id) => {
+  User.findById(id, (err, user) => {
+    if (err) {
+      next(err);
+    } else if (user) {
+      req.userTarget = user;
+      next();
+    } else {
+      next(new Error('failed to load user'));
+    }
+  });
+});
+
+router.put('/user/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  
+});
+
+router.delete('/user/:id', passport.authenticate('jwt', { session: false }), (req, res) => {
+  if (req.userTarget) {
+    const { userTarget } = req;
+    User.deleteOne({ id: userTarget.id });
+    return res.sendStatus(200);
   }
-
-  if (!req.body.user.password) {
-    return res.status(422).json({ errors: { password: "can't be blank" } });
-  }
-
-
+  return res.sendStatus(401);
 });
 
 module.exports = router;

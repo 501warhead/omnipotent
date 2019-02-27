@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { secret } from '../config';
 
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCK_TIME = 2 * 60 * 60 * 1000;
@@ -75,6 +77,24 @@ User.methods.incLoginAttempts = (callback) => {
   }
   return this.update(updates, callback);
 };
+
+User.methods.generateJWT = () => {
+  const today = new Date();
+  const exp = new Date(today);
+  exp.setDate(today.getDate() + 60);
+
+  return jwt.sign({
+    id: this.id,
+    email: this.email,
+    exp: parseInt(exp.getTime() / 1000, 10),
+    permissions: this.claims,
+  }, secret);
+};
+
+User.methods.toAuthJSON = () => ({
+  email: this.email,
+  token: this.generateJWT()
+});
 
 User.statics.getAuthenticated = (username, password, callback) => {
   this.findOne({ username }, (err, user) => {
